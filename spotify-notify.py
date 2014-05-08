@@ -12,8 +12,6 @@ from dbus.mainloop.glib import DBusGMainLoop
 import os, tempfile, sys, time, re
 import urllib.request
 from gi.repository import GObject
-#TODO: Check if the following line really is not needed
-#from gi.repository import Gtk
 from optparse import OptionParser
 from subprocess import *
 

@@ -14,12 +14,12 @@ If you want to install spotify-notify permanently, it's recommended to follow th
 
 Just execute the following terminal commands to install spotify-notify:
 ```bash
-sudo mkdir /opt/spotify-notify/     # Create new directory to install spotify-notify
-cd /opt/spotify-notify/             # Change current directory to this folder
+sudo mkdir /opt/spotify-notify/        # Create new directory to install spotify-notify
+cd /opt/spotify-notify/                # Change current directory to this folder
 # Download current version of spotify-notify
 sudo wget https://raw.githubusercontent.com/sveint/spotify-notify/master/spotify-notify.py
-sudo chmod a+x spotify-notify.py    # Mark spotify-notify.py as an executable
-python3 spotify-notify.py -s &       # Start spotify-notify in background
+sudo chmod a+x spotify-notify.py       # Mark spotify-notify.py as an executable
+python3 spotify-notify.py -s & disown  # Start spotify-notify in background
 ```
 
 ### Adding spotify-notify to autostart

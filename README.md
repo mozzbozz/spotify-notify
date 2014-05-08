@@ -19,13 +19,13 @@ cd /opt/spotify-notify/             # Change current directory to this folder
 # Download current version of spotify-notify
 sudo wget https://raw.githubusercontent.com/sveint/spotify-notify/master/spotify-notify.py
 sudo chmod a+x spotify-notify.py    # Mark spotify-notify.py as an executable
-python spotify-notify.py -s &       # Start spotify-notify in background
+python3 spotify-notify.py -s &       # Start spotify-notify in background
 ```
 
 ### Adding spotify-notify to autostart
 In Ubuntu you can easily add spotify-notify to the autostart. You only need to open the startup-programmes dialog. More details can be found in the [Ubuntu Wiki](https://help.ubuntu.com/community/AddingProgramToSessionStartup#Startup_Programs). As the name you can choose something like "Spotify Notify" and as the command to be executed, choose
 
-`python spotify-notify.py -s`
+`python3 spotify-notify.py -s`
 
 The comment field can be left empty.
 
@@ -34,7 +34,7 @@ Advanced
 ### Running spotify-notify (general information)
 To get it running, you first need to clone this repository or download the file `spotify-notify.py`. Afterwards you can run spotify-notify by
 
-`python spotify-notify.py`
+`python3 spotify-notify.py`
 
 It will launch Spotify for you if not already running. Please see options below to change default behavior.
 

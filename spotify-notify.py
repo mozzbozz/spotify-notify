@@ -1,5 +1,5 @@
-#!/usr/bin/python
-
+#! /usr/bin/env python3
+ 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -9,7 +9,11 @@
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop
 
-import gobject, gtk, os, tempfile, sys, time, re, urllib2
+import os, tempfile, sys, time, re
+import urllib.request
+from gi.repository import GObject
+#TODO: Check if the following line really is not needed
+#from gi.repository import Gtk
 from optparse import OptionParser
 from subprocess import *
 
@@ -58,7 +62,7 @@ class SpotifyNotify():
                 '/org/mpris/MediaPlayer2'
             )
             SpotifyNotify.tryToReconnect = False
-        except Exception, e:
+        except Exception as e:
             self.spotifyservice = False
             self.debug.out("Failed to connect.")
             self.debug.out(e)
@@ -80,7 +84,7 @@ class SpotifyNotify():
                 'org.freedesktop.MediaPlayer2'
             )
             self.new = self.cmd()
-        except Exception, e:
+        except Exception as e:
             self.debug.out('Spotify service not connected.')
             SpotifyNotify.tryToReconnect = True
 
@@ -119,7 +123,7 @@ class SpotifyNotify():
             if not isinstance(piece, str):
                 piece = str(piece)
 
-            trackInfo[key] = piece.encode('utf-8')
+            trackInfo[key] = piece
 
         if not self.prevMeta\
           or not SpotifyNotify.tmpfile\
@@ -158,12 +162,12 @@ class SpotifyNotify():
  	        notifyText += " ({0})".format(trackInfo['year'])
 
         # Send track change information to stdout
-        print "Changing track : {0} | {1} | {2} ({3})".format(
+        print("Changing track : {0} | {1} | {2} ({3})".format(
             trackInfo['artist'],
             trackInfo['title'],
             trackInfo['album'],
             trackInfo['year']
-        )
+        ))
 
         # The second param is the replace id, so get the notify id back,
         # store it, and send it as the replacement on the next call.
@@ -199,7 +203,8 @@ class SpotifyNotify():
         try:
             trackid = trackhash.split(":")[2]
             url = SPOTIFY_OPEN_URL + trackid
-            tracksite = urllib2.urlopen(url).read()
+            request = urllib.request.Request(url)
+            tracksite = urllib.request.urlopen(request).read()
 
             # Attempt to get the image url from the open graph image meta tag.
             imageurl  = False
@@ -220,7 +225,7 @@ class SpotifyNotify():
                 raise()
 
             return self.fetchCoverImage(imageurl)
-        except Exception, e:
+        except Exception as e:
             self.debug.out("Couldn't fetch cover image.")
             self.debug.out(e)
 
@@ -237,11 +242,13 @@ class SpotifyNotify():
             tmpfilename = SpotifyNotify.tmpfile.name
             self.debug.out("Album art tmp filepath: {0}".format(tmpfilename))
 
-            coverfile = urllib2.urlopen(url)
+            request = urllib.request.Request(url)
+            coverfile = urllib.request.urlopen(request)
+
             SpotifyNotify.tmpfile.write(coverfile.read())
             SpotifyNotify.tmpfile.flush()
             return tmpfilename
-        except Exception, e:
+        except Exception as e:
             self.debug.out("Couldn't fetch cover image.")
             self.debug.out(e)
 
@@ -359,7 +366,7 @@ class MediaKeyHandler():
                 '/org/gnome/SettingsDaemon/MediaKeys'
             )
         except:
-            print "Gnome SettingsDaemon not founnd, multimedia keys will not interact with spotify"
+            print("Gnome SettingsDaemon not founnd, multimedia keys will not interact with spotify")
             return
         try:
             self.bus_object.GrabMediaPlayerKeys(
@@ -448,7 +455,7 @@ if __name__ == "__main__":
         SpotifyNotify.spotifyPath = SPOTIFY_PROCESS_NAME
     else:
         for line in Popen('which spotify', shell=True, stdout=PIPE).stdout:
-            SpotifyNotify.spotifyPath = str(line).strip()
+            SpotifyNotify.spotifyPath = str(line.decode('utf-8')).strip()
             break
 
     if options.skipSpotify:
@@ -470,11 +477,11 @@ if __name__ == "__main__":
     if not options.skipMediaKeys:
         MH = MediaKeyHandler(SN, Debug)
 
-    loop = gobject.MainLoop()
+    loop = GObject.MainLoop()
 
     if not options.skipSpotify:
-        gobject.timeout_add(SPOTIFY_CLOSED_CHECK, SN.checkForClosedSpotify, SN, Debug)
+        GObject.timeout_add(SPOTIFY_CLOSED_CHECK, SN.checkForClosedSpotify, SN, Debug)
     if not options.skipNotify:
-        gobject.timeout_add(500, SN.pollChange)
+        GObject.timeout_add(500, SN.pollChange)
 
     loop.run()

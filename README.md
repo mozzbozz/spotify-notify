@@ -18,6 +18,8 @@ sudo mkdir /opt/spotify-notify/     # Create new directory to install spotify-no
 cd /opt/spotify-notify/             # Change current directory to this folder
 # Download current version of spotify-notify
 sudo wget https://raw.githubusercontent.com/sveint/spotify-notify/master/spotify-notify.py
+# Download spotify logo
+sudo wget https://raw.githubusercontent.com/sveint/spotify-notify/master/icon_spotify.png
 sudo chmod a+x spotify-notify.py    # Mark spotify-notify.py as an executable
 python spotify-notify.py -s &       # Start spotify-notify in background
 ```
